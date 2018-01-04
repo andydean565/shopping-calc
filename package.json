@@ -1,0 +1,37 @@
+{
+  "name": "shopping-calc",
+  "version": "1.0.0",
+  "description": "shopping calculator",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andydean565/shopping-calc.git"
+  },
+  "author": "Andrew Dean",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andydean565/shopping-calc/issues"
+  },
+  "homepage": "https://github.com/andydean565/shopping-calc#readme",
+  "dependencies": {
+    "bootstrap": "^4.0.0-beta.3",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1",
+    "popper.js": "^1.12.6",
+    "vue": "^2.5.13"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.9.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-if": "^2.0.2",
+    "gulp-minify": "^1.0.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-watch": "^4.3.11"
+  }
+}

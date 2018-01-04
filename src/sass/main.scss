@@ -1,0 +1,18 @@
+.card{
+  .fa{
+    padding: 2vh 2vw;
+  }
+  padding: 0;
+  .card-header{
+    padding: 2vh 2vw;
+  }
+  .card-body{
+    padding: 0;
+    .shop-item{
+      padding: 1vh 5vw;
+      .badge{
+        margin: 0vh 2vw;
+      }
+    }
+  }
+}
