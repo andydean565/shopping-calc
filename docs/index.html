@@ -36,27 +36,80 @@
     <section id="list" class="row">
       <div class="card col-12">
         <div class="card-header">
-          <a class="fa fa-plus fa-2x float-right"></a>
+          <a data-toggle="modal" data-target="#addItem" class="fa fa-plus fa-2x float-right"></a>
           <h2 class="card-title">List : <span>{{lists[active].name}}</span></h2>
           <h6 class="card-subtitle mb-2 text-muted">{{lists[active].description}}</h6>
         </div>
         <div class="card-body">
           <ul class="list-group list-group-flush">
-            <li class="list-group-item shop-item">
-              <div class="row">
-                <div class="col-9">
+            <li v-for="(item, index) in lists[active].items" class="list-group-item shop-item">
+              <div class="row justify-content-end no-gutters">
+                <div class="col-8">
                   <div class="row">
-                    <h5>Item <span class="badge badge-secondary">2</span></h5>
+                    <h5>{{item.name}} <span v-if="item.amount > 1" class="badge badge-secondary">{{item.amount}}</span></h5>
                   </div>
-                  <div class="row"><h6 class="text-muted">Price</h6></div>
+                  <div class="row no-gutters">
+                    <div class="col-12">
+                      <h6 class="text-muted">£{{item.price * item.amount}}</h6>
+                      <small class="text-muted">Each £{{item.price}}</small>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-3"><a class="fa fa-close fa-2x float-right"></a></div>
               </div>
             </li>
           </ul>
+        </div>
+        <div class="card-footer">
+          <div class="row">
+            <div class="col-12">
+              <h5 class="float-right">Total : £{{totalCost(lists[active].items)}}</h5>
+            </div>
           </div>
         </div>
+      </div>
     </section>
+    <!-- modals -->
+    <div class="modal fade" id="addItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addItemForm">Add Item</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form class="modal-body">
+            <div class="row form-group">
+              <div class="col-12">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" placeholder="Enter Name" v-bind:value="editItem.name">
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-6">
+                <label for="amount">Amount</label>
+                <select class="form-control" v-bind:value="editItem.amount">
+                  <option v-for="i in limit">{{i}}</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="amount">Price</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">£</div>
+                  </div>
+                  <input type="text" class="form-control" placeholder="Price" v-bind:value="editItem.price">
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary float-right" v-on:click="addItem(editItem)">Add Item</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
   <script src="js/bundle.min.js"></script>
 </body>
