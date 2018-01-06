@@ -6,29 +6,40 @@ var app = new Vue({
       {
         name : "test 2",
         description : "testing",
-        items : [
-          {
-            name : "bananas",
-            amount : 2,
-            price : 1.99
-          },
-          {
-            name : "apples",
-            amount : 2,
-            price : 1.87
-          }
-        ]
+        items : []
       }
     ],
     active : 0,
-    editItem : {
+    editItem : null,
+    newItem : {
       name : "",
       amount : 1,
-      price : 0.00,
+      price : null
     },
     limit : 5
   },
+  mounted: function () {
+    console.log('mounted');
+    this.setup();
+
+  },
+  created: function () {
+    console.log('created');
+  },
   methods: {
+    setup: function (){
+      //check cookie
+      if(this.$cookies.isKey('lists')){
+        var data = JSON.parse(this.$cookies.get('lists'));
+        this.lists = data;
+      }
+    },
+    update: function (){
+      //update list cookie
+      var data = JSON.stringify(this.lists);
+
+      this.$cookies.set("lists",data, (60*60*24*30));
+    },
     totalCost: function (items) {
       var total = 0;
       items.forEach(function(item) {
@@ -36,24 +47,21 @@ var app = new Vue({
       });
       return Math.round(total * 100) / 100;
     },
+    totalItems: function (items) {
+      var total = 0;
+      items.forEach(function(item) {
+        total += 1 * item.amount;
+      });
+      return total;
+    },
     addItem: function (item) {
-      lists[active].items.push(item);
-
+      this.lists[this.active].items.push(item);
+      this.update();
+      $('#addItem').modal('hide');
+    },
+    removeItem: function (item) {
+      console.log(item);
+      this.lists[this.active].items.splice(item, 1);
     }
-  },
-
-})
-
-Vue.component('shop-item', {
-  props: {
-    item: {type: Object},
-    index: {type: Number}
-  },
-  template : "#shop-item",
-  methods: {
-    remove: function (value) {this.$emit('input:lang_topic', value)},
-    amend: function (value) {this.$emit('input:lang_topic', value)},
-  },
-  mounted: function () {
   }
-});
+})
