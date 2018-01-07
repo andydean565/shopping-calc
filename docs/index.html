@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <!-- meta tags -->
   <meta charset="utf-8">
@@ -9,152 +8,48 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="css/bundle.min.css">
 </head>
-
 <body>
-  <div class="pos-f-t">
-    <div class="collapse" id="navbarToggleExternalContent">
-      <div class="bg-dark p-4">
-        <div class="navbar-collapse" id="main-nav">
-          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Add list</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Change List</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <nav class="navbar navbar-dark bg-dark">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-      </button>
-    </nav>
-  </div>
-  <main id="app" class="container">
-    <section id="list" class="row">
-      <div v-if="active != null" class="card col-12">
-        <div class="card-header">
-          <a data-toggle="modal" data-target="#addItem" class="fa fa-plus fa-2x float-right"></a>
-          <h2 class="card-title">List : <span>{{lists[active].name}}</span></h2>
-          <h6 class="card-subtitle mb-2 text-muted">{{lists[active].description}}</h6>
-        </div>
-        <div class="card-body">
-          <ul class="list-group list-group-flush">
-            <li v-if="lists[active].items"  v-for="(item, index) in lists[active].items" class="list-group-item shop-item">
-              <div class="row justify-content-end">
-                <div class="col-8">
-                  <div class="row">
-                    <div class="col-12">
-                      <a data-toggle="modal" data-target="#editItem" v-on:click="editItem = index"><h5>{{item.name}} <span v-if="item.amount > 1" class="badge badge-secondary">{{item.amount}}</span></h5></a>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12">
-                      <h6 class="text-muted">£{{item.price * item.amount}}</h6>
-                      <small v-if="item.amount > 1" class="text-muted">Each £{{item.price}}</small>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-3"><a v-on:click="removeItem(index)" class="fa fa-close fa-2x float-right"></a></div>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="card-footer">
-          <div class="row">
-            <div class="col-12">
-              <h5 class="float-left">Items : {{totalItems(lists[active].items)}}</h5>
-              <h5 class="float-right">Total : £{{totalCost(lists[active].items)}}</h5>
-            </div>
-          </div>
-        </div>
+  <main id="app">
+    <!-- All Lists -->
+    <section id="intro" class="jumbotron text-center">
+      <div class="container">
+        <h1 class="jumbotron-heading">Shopping list calculator</h1>
+        <p class="lead text-muted">A small application to help you budget your shopping.</p>
+        <p>
+          <a href="#" class="btn btn-primary">New List</a>
+          <a href="#" class="btn btn-secondary">Quick Add</a>
+        </p>
       </div>
     </section>
+    <section id="lists" class="container">
+      <div class="row">
+        <h1>Lists</h1>
+      </div>
+      <div class="row" v-if="lists.length > 0">
+        <list-card v-for="(list, i) in lists" :key="i" v-bind:index="i" v-bind:list="list"></list-card>
+      </div>
+    </section>
+    <!-- Open list -->
     <!-- modals -->
-    <div class="modal fade" id="addItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addItemForm">Add Item</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form class="modal-body">
-            <div class="row form-group">
-              <div class="col-12">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" placeholder="Enter Name" v-model="newItem.name">
-              </div>
-            </div>
-            <div class="row form-group">
-              <div class="col-6">
-                <label for="amount">Amount</label>
-                <select class="form-control" v-model="newItem.amount">
-                  <option v-for="i in limit">{{i}}</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label for="amount">Price (each)</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">£</div>
-                  </div>
-                  <input type="number" class="form-control" placeholder="Price" v-model="newItem.price">
-                </div>
-              </div>
-            </div>
-          </form>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary float-right" v-on:click="addItem(newItem)">Add Item</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- edit item -->
-    <div class="modal fade" id="editItem" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editItemForm">Edit Item</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <form v-if="editItem != null" class="modal-body">
-            <div class="row form-group">
-              <div class="col-12">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" placeholder="Enter Name" v-model="lists[active].items[editItem].name">
-              </div>
-            </div>
-            <div class="row form-group">
-              <div class="col-6">
-                <label for="amount">Amount</label>
-                <select class="form-control" v-model="lists[active].items[editItem].amount">
-                  <option v-for="i in limit">{{i}}</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label for="amount">Price (each)</label>
-                <div class="input-group mb-2">
-                  <div class="input-group-prepend">
-                    <div class="input-group-text">£</div>
-                  </div>
-                  <input type="number" class="form-control" placeholder="Price" v-model="lists[active].items[editItem].price">
-                </div>
-              </div>
-            </div>
-          </form>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary float-right" data-dismiss="modal">Finished</button>
-          </div>
-        </div>
-      </div>
-    </div>
   </main>
+  <!-- Templates -->
+  <script type="text/x-template" id="list-card">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">{{list.title}}</h5>
+          <p class="card-text">{{list.description}}</p>
+        </div>
+        <ul class="list-group list-group-flush stats-group">
+          <li class="list-group-item" v-for="(value, key) in stats()">{{ key }} : {{ value }}</li>
+        </ul>
+        <div class="card-body">
+          <a href="#" class="card-link float-left"><i class="fa danger fa-trash-o fa-lg"></i></a>
+          <a href="#" class="card-link float-right"><i class="fa fa-pencil-square-o fa-lg"></i></a>
+        </div>
+      </div>
+    </div>
+  </script>
   <script src="js/bundle.min.js"></script>
 </body>
 

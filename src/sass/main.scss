@@ -1,17 +1,21 @@
-.card{
-  .fa{
-    padding: 2vh 2vw;
-  }
-  padding: 0;
-  .card-header{
-    padding: 2vh 2vw;
-  }
-  .card-body{
-    padding: 0;
-    .shop-item{
-      //padding: 1vh 5vw;
-      .badge{
-        margin: 0vh 2vw;
+$white : #fff;
+$dark : #333;
+
+body{
+  background: $dark;
+  color: $white;
+  section{
+    &#intro{
+      background: $white;
+      color: $dark;
+    }
+    .card{
+      color: $dark;
+      .card-title{
+        text-transform: capitalize;
+      }
+      .stats-group{
+        text-transform: capitalize;
       }
     }
   }
