@@ -16,35 +16,132 @@
         <h1 class="jumbotron-heading">Shopping list calculator</h1>
         <p class="lead text-muted">A small application to help you budget your shopping.</p>
         <p>
-          <a href="#" class="btn btn-primary">New List</a>
-          <a href="#" class="btn btn-secondary">Quick Add</a>
+          <a href="#" data-toggle="modal" data-target="#addList" class="btn btn-primary">New List</a>
+          <a href="#" data-toggle="modal" data-target="#addItem" class="btn btn-secondary">Quick Add</a>
         </p>
       </div>
     </section>
-    <section id="lists" class="container">
+    <section id="lists" class="container" v-if="lists.length > 0">
       <div class="row">
-        <h1>Lists</h1>
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <h2 class="card-title">Lists <span class="float-right badge badge-secondary">{{lists.length}}</span></h2>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="row" v-if="lists.length > 0">
-        <list-card v-for="(list, i) in lists" :key="i" v-bind:index="i" v-bind:list="list"></list-card>
+      <div class="row">
+        <list-card v-for="(list, i) in lists" :key="i" v-bind:index="i" v-bind:list="list" v-on:remove="removelist(index)"></list-card>
+      </div>
+      <div class="row" v-else>
+        <div class="col">
+          <div class="card">
+            <div class="card-body">
+              <p class="card-text">Your have no lists</p>
+              <a href="#" data-toggle="modal" data-target="#addList" class="btn btn-primary">New List</a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
     <!-- Open list -->
     <!-- modals -->
+    <!-- add list -->
+    <div class="modal fade" id="addList">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addListForm">Add List</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form class="modal-body">
+            <div class="row form-group">
+              <div class="col-md-6 col-sm-12">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" placeholder="Enter Name" v-model="add.list.title">
+              </div>
+              <div class="col-md-6 col-sm-12">
+                <label for="date">Date</label>
+                <input type="date" class="form-control" v-model="add.list.date">
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-12">
+                <label for="description">Description</label>
+                <textarea class="form-control" rows="3" v-model="add.list.description"></textarea>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary float-right" v-on:click="addList(add.list)">Add List</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- add item -->
+    <div class="modal fade" id="addItem" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addItemForm">Add Item</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form class="modal-body">
+            <div class="row form-group">
+              <div class="col-12">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" placeholder="Enter Name" v-model="new.item.title">
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-6">
+                <label for="amount">Amount</label>
+                <select class="form-control" v-model="new.item.amount">
+                  <option v-for="i in settings.limit">{{i}}</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="amount">Price (each)</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">£</div>
+                  </div>
+                  <input type="number" class="form-control" placeholder="Price" v-model="new.item.price">
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary float-right" v-on:click="addItem(new.item)">Add Item</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
   <!-- Templates -->
   <script type="text/x-template" id="list-card">
     <div class="col-md-4">
       <div class="card">
+        <div class="card-body row justify-content-between">
+          <div class="col text-left">
+            <h5 class="card-title">{{list.title}}</h5>
+            <p class="card-text">Items : {{stats().items}}</p>
+          </div>
+          <div class="col text-right">
+            <p class="card-text">{{list.date}}</p>
+            <p class="card-text">{{stats().cost}}</p>
+          </div>
+        </div>
         <div class="card-body">
-          <h5 class="card-title">{{list.title}}</h5>
           <p class="card-text">{{list.description}}</p>
         </div>
-        <ul class="list-group list-group-flush stats-group">
-          <li class="list-group-item" v-for="(value, key) in stats()">{{ key }} : {{ value }}</li>
-        </ul>
         <div class="card-body">
-          <a href="#" class="card-link float-left"><i class="fa danger fa-trash-o fa-lg"></i></a>
+          <a href="#" class="card-link float-left" v-on:click="remove()"><i class="fa danger fa-trash-o fa-lg"></i></a>
           <a href="#" class="card-link float-right"><i class="fa fa-pencil-square-o fa-lg"></i></a>
         </div>
       </div>

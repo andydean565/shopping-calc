@@ -3,14 +3,14 @@ $dark : #333;
 
 body{
   background: $dark;
-  color: $white;
+  // color: $white;
   section{
     &#intro{
       background: $white;
       color: $dark;
     }
     .card{
-      color: $dark;
+      margin: 2vh 2vw;
       .card-title{
         text-transform: capitalize;
       }

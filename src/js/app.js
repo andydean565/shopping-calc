@@ -5,11 +5,15 @@ var app = new Vue({
       {title : "test 1", description : "test", date : "12/07/2017", items : []},
       {title : "test 2", description : "test", date : "12/07/2018", items : []}
     ],
-    new :{
+    add :{
       item : {title : "", amount : 1, price : null, bought : null},
       list : {title : "", description : "", date : "", items : []},
     },
-    settings : {list : null,item : null, limit : 5, cookie: (60*60*24*30)}
+    model :{
+      item : {title : "", amount : 1, price : null, bought : null},
+      list : {title : "", description : "", date : "", items : []},
+    },
+    settings : {list : null, item : null, selected : null, limit : 5, cookie: (60*60*24*30)}
   },
   mounted: function () {
     this.setup();
@@ -31,7 +35,7 @@ var app = new Vue({
     //add
     addList: function (list) {
       this.lists.push(list);
-      this.newlist = {name : "", description : "", items : []};
+      this.add.list = this.model.list;
       this.update();
       $('#addList').modal('hide');
     },
@@ -54,14 +58,14 @@ var app = new Vue({
     //items
     //add
     addItem: function (item) {
-      this.lists[this.active.list].items.push(item);
-      this.newItem = {name : "",amount : 1,price : null};
+      this.lists[this.settings.list].items.push(item);
+      this.add.item = this.model.item;
       this.update();
       $('#addItem').modal('hide');
     },
     //remove
     removeItem: function (item) {
-      this.lists[this.active.list].items.splice(item, 1);
+      this.lists[this.settings.list].items.splice(item, 1);
       this.update();
     }
   }
