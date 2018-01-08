@@ -2,12 +2,18 @@ Vue.component('list-card', {
   props: ['list', 'index'],
   template : "#list-card",
   methods: {
-    remove: function () {
-      this.$emit('remove');
-    },
-    stats: function () {
-      return this.$root.listStats(this.index);
-    }
+    remove: function () {this.$emit('remove');},
+    select: function () {this.$emit('select');},
+    stats: function () {return this.$root.listStats(this.index);}
+  }
+});
+
+Vue.component('item-card', {
+  props: ['item', 'index'],
+  template : "#item-card",
+  methods: {
+    remove: function () {this.$emit('remove');},
+    select: function () {this.$emit('select');}
   }
 });
 
@@ -57,6 +63,10 @@ var app = new Vue({
       this.lists.splice(list, 1);
       this.update();
     },
+    //select
+    selectlist: function (list) {
+      this.settings.list = list;
+    },
     //Stats
     listStats: function (i) {
       var list = this.lists[i];
@@ -71,14 +81,18 @@ var app = new Vue({
     //items
     //add
     addItem: function (item) {
-      this.lists[this.settings.list].items.push(item);
+      var list;
+      if(this.settings.list != null){list = this.settings.list;}
+      else{list = this.settings.selected;}
+
+      this.lists[list].items.push(item);
       this.add.item = this.model.item;
       this.update();
       $('#addItem').modal('hide');
     },
     //remove
-    removeItem: function (item) {
-      this.lists[this.settings.list].items.splice(item, 1);
+    removeItem: function (item, list) {
+      this.lists[list].items.splice(item, 1);
       this.update();
     }
   }

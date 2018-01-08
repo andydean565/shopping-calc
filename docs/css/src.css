@@ -4,8 +4,12 @@ body {
     background: #fff;
     color: #333; }
   body section .card {
-    margin: 2vh 2vw; }
+    margin: 1vh 0vw; }
     body section .card .card-title {
       text-transform: capitalize; }
+    body section .card.list-stats p {
+      margin-bottom: 0; }
+    body section .card .list-actions {
+      padding: 1vh 4vw 0vh; }
     body section .card .stats-group {
       text-transform: capitalize; }

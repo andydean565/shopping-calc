@@ -10,9 +10,15 @@ body{
       color: $dark;
     }
     .card{
-      margin: 2vh 2vw;
+      margin: 1vh 0vw;
       .card-title{
         text-transform: capitalize;
+      }
+      &.list-stats{
+        p{margin-bottom: 0;}
+      }
+      .list-actions{
+        padding: 1vh 4vw 0vh;
       }
       .stats-group{
         text-transform: capitalize;
