@@ -12,8 +12,13 @@ Vue.component('list-section', {
   props: ['list', 'index'],
   template : "#list-section",
   methods: {
-    test: function () {console.log('test')},
-    stats: function () {return this.$root.listStats(this.index);}
+    remove: function (item) {
+      this.$root.lists[this.index].items.splice(item, 1);
+      this.$root.update();
+    },
+    stats: function () {
+      return this.$root.listStats(this.index);
+    }
   }
 });
 
@@ -21,8 +26,7 @@ Vue.component('item-card', {
   props: ['item', 'index'],
   template : "#item-card",
   methods: {
-    remove: function () {this.$emit('remove');},
-    select: function () {this.$emit('select');},
+    remove: function (item) {this.$emit('remove');},
     price: function (num) {return this.$root.convert(num, "money");}
   }
 });

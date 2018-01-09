@@ -171,17 +171,18 @@
             <div class="card-body">
               <a data-toggle="modal" data-target="#addItem" class="fa fa-plus fa-2x float-right action"></a>
               <h2 class="card-title">{{list.title}}</h2>
+              <small>{{ list.description }}</small>
             </div>
           </div>
           <div class="list-group">
-            <item-card v-for="(item, i) in list.items" v-bind:index="i" v-bind:item="item" v-on:remove="removeItem(i,settings.list)"></item-card>
+            <item-card v-for="(item, i) in list.items" :key="i" v-bind:index="i" v-bind:item="item" v-on:remove="remove(i)"></item-card>
           </div>
           <div class="card list-stats">
             <div class="card-body">
               <div class="row align-items-center">
                 <div class="col">
-                  <p class="card-text float-left">Items : {{stats().items}}</p>
-                  <p class="card-text float-right">Total : {{stats().cost}}</p>
+                  <p class="card-text float-left">Items : {{ stats().items }}</p>
+                  <p class="card-text float-right">Total : {{ stats().cost }}</p>
                 </div>
               </div>
             </div>
@@ -192,16 +193,14 @@
   </script>
   <!-- item card -->
   <script type="text/x-template" id="item-card">
-    <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+    <div class="list-group-item list-group-item-action flex-column align-items-start">
       <div class="d-flex w-100 justify-content-between">
-        <h5 class="mb-1">{{item.title}} <span class="badge badge-secondary" v-if="item.amount > 1">{{item.amount}}</span></h5>
+        <a data-toggle="modal" data-target="#addItem"><h5 class="mb-1">{{item.title}} <span class="badge badge-secondary" v-if="item.amount > 1">{{item.amount}}</span></h5></a>
         <a v-on:click="remove" class="fa fa-close fa-lg float-right"></a>
       </div>
-      <p class="mb-1">Price : £{{price(item.price * item.amount)}}</p>
-      <!-- <small>Donec id elit non mi porta.</small> -->
-    </a>
+      <p class="mb-1">Price : £ {{price(item.price * item.amount)}}</p>
+    </div>
   </script>
   <script src="js/bundle.min.js"></script>
 </body>
-
 </html>
