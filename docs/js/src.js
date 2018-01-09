@@ -8,12 +8,22 @@ Vue.component('list-card', {
   }
 });
 
+Vue.component('list-section', {
+  props: ['list', 'index'],
+  template : "#list-section",
+  methods: {
+    test: function () {console.log('test')},
+    stats: function () {return this.$root.listStats(this.index);}
+  }
+});
+
 Vue.component('item-card', {
   props: ['item', 'index'],
   template : "#item-card",
   methods: {
     remove: function () {this.$emit('remove');},
-    select: function () {this.$emit('select');}
+    select: function () {this.$emit('select');},
+    price: function (num) {return this.$root.convert(num, "money");}
   }
 });
 
@@ -85,6 +95,9 @@ var app = new Vue({
       if(this.settings.list != null){list = this.settings.list;}
       else{list = this.settings.selected;}
 
+      //change to currency
+      item.price = this.convert(item.price, "money");
+
       this.lists[list].items.push(item);
       this.add.item = this.model.item;
       this.update();
@@ -94,6 +107,12 @@ var app = new Vue({
     removeItem: function (item, list) {
       this.lists[list].items.splice(item, 1);
       this.update();
+    },
+    convert: function(str, type){
+      var result;
+      if(type == "money"){result = ((parseFloat(str) * 100) / 100).toFixed(2);}
+      console.log(result);
+      return result;
     }
   }
 });
