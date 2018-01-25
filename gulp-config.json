@@ -6,7 +6,7 @@
   },
   "src" : {
     "loc" : "./src",
-    "js":["./src/js/*.js"],
+    "js":[ "./src/js/components.js", "./src/js/app.js"],
     "css":["./src/sass/*.scss"]
   },
   "pkgs" :{
@@ -15,6 +15,7 @@
       "./node_modules/popper.js/dist/umd/popper.min.js",
       "./node_modules/bootstrap/dist/js/bootstrap.min.js",
       "./node_modules/vue/dist/vue.js",
+      "./node_modules/vue-resource/dist/vue-resource.js",
       "./node_modules/vue-cookies/vue-cookies.js"
     ],
     "css": [

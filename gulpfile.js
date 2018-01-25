@@ -67,7 +67,7 @@ gulp.task('watch', function () {
 });
 
 //default
-gulp.task('default', ['bundle_all', 'watch']);
+gulp.task('default', ['watch','bundle_all']);
 
 //----------- FUNCTIONS -----------//
 

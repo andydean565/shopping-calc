@@ -1,67 +1,127 @@
+Vue.component('list-card', {
+  props: ['list', 'index'],
+  template : "#list-card",
+  methods: {
+    remove: function () {this.$emit('remove');},
+    select: function () {this.$emit('select');},
+    stats: function () {return this.$root.listStats(this.index);}
+  }
+});
+
+Vue.component('list-section', {
+  props: ['list', 'index'],
+  template : "#list-section",
+  methods: {
+    remove: function (item) {
+      this.$root.lists[this.index].items.splice(item, 1);
+      this.$root.update();
+    },
+    select: function (item) {
+      this.$root.settings.item = item;
+    },
+    stats: function () {
+      return this.$root.listStats(this.index);
+    }
+  }
+});
+
+Vue.component('item-card', {
+  props: ['item', 'index'],
+  template : "#item-card",
+  methods: {
+    remove: function (item) {this.$emit('remove');},
+    select: function (item) {this.$emit('select');},
+    price: function (num) {return this.$root.convert(num, "money");}
+  }
+});
+
 var app = new Vue({
   el: '#app',
   data: {
-    message: 'Hello Vue!',
     lists : [
-      {
-        name : "test 2",
-        description : "testing",
-        items : []
-      }
+      {title : "test 1", description : "test", date : "12/07/2017", items : []},
+      {title : "test 2", description : "test", date : "12/07/2018", items : []}
     ],
-    active : 0,
-    editItem : null,
-    newItem : {
-      name : "",
-      amount : 1,
-      price : null
+    add :{
+      item : {title : "", amount : 1, price : null, date : null, bought : 0},
+      list : {title : "", description : "", date : "", items : []},
     },
-    limit : 5
+    model :{
+      item : {title : "", amount : 1, price : null, date : null, bought : 0},
+      list : {title : "", description : "", date : "", items : []},
+    },
+    settings : {list : null, item : null, selected : null, limit : 5, cookie: (60*60*24*30)}
   },
   mounted: function () {
-    console.log('mounted');
     this.setup();
-
-  },
-  created: function () {
-    console.log('created');
   },
   methods: {
+    //App setup
     setup: function (){
-      //check cookie
       if(this.$cookies.isKey('lists')){
         var data = JSON.parse(this.$cookies.get('lists'));
         this.lists = data;
       }
     },
+    //update app saves
     update: function (){
-      //update list cookie
       var data = JSON.stringify(this.lists);
-
-      this.$cookies.set("lists",data, (60*60*24*30));
+      this.$cookies.set("lists",data, this.settings.cookie);
     },
-    totalCost: function (items) {
-      var total = 0;
-      items.forEach(function(item) {
-        total += (item.price * item.amount);
-      });
-      return Math.round(total * 100) / 100;
-    },
-    totalItems: function (items) {
-      var total = 0;
-      items.forEach(function(item) {
-        total += 1 * item.amount;
-      });
-      return total;
-    },
-    addItem: function (item) {
-      this.lists[this.active].items.push(item);
+    //lists
+    //add
+    addList: function (list) {
+      this.lists.push(list);
+      this.add.list = this.model.list;
       this.update();
-      $('#addItem').modal('hide');
+      $('#addList').modal('hide');
     },
-    removeItem: function (item) {
+    //remove
+    removelist: function (list) {
+      this.lists.splice(list, 1);
+      this.update();
+    },
+    //select
+    selectlist: function (list) {
+      this.settings.list = list;
+    },
+    //Stats
+    listStats: function (i) {
+      var list = this.lists[i];
+      var result = {items : 0, deals : 0, cost : 0.00,};
+      list.items.forEach(function(item) {
+        result.items += (1 * item.amount);
+        result.cost += (item.price * item.amount);
+      });
+      result.cost = "£" + this.convert(result.cost, "money");
+      return result;
+    },
+    //items
+    //add
+    addItem: function (item) {
+      var list;
+      if(this.settings.list != null){list = this.settings.list;}
+      else{list = this.settings.selected;}
+
+      // if(this.validate(item)){
+        item.price = this.convert(item.price, "money");
+        this.lists[list].items.push(item);
+        this.update();
+        $('#addItem').modal('hide');
+        this.add.item = {title : "", amount : 1, price : null, date : null, bought : 0};
+      // }
+    },
+    validate: function(item){
       console.log(item);
-      this.lists[this.active].items.splice(item, 1);
+      for (var key in item) {
+        if(item[key] == null){return false;}
+      }
+      return true;
+    },
+    convert: function(str, type){
+      var result;
+      if(type == "money"){result = ((parseFloat(str) * 100) / 100).toFixed(2);}
+      return result;
     }
   }
-})
+});
