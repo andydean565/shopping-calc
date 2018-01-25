@@ -16,6 +16,9 @@ Vue.component('list-section', {
       this.$root.lists[this.index].items.splice(item, 1);
       this.$root.update();
     },
+    select: function (item) {
+      this.$root.settings.item = item;
+    },
     stats: function () {
       return this.$root.listStats(this.index);
     }
@@ -27,6 +30,7 @@ Vue.component('item-card', {
   template : "#item-card",
   methods: {
     remove: function (item) {this.$emit('remove');},
+    select: function (item) {this.$emit('select');},
     price: function (num) {return this.$root.convert(num, "money");}
   }
 });
@@ -39,11 +43,11 @@ var app = new Vue({
       {title : "test 2", description : "test", date : "12/07/2018", items : []}
     ],
     add :{
-      item : {title : "", amount : 1, price : null, bought : 0},
+      item : {title : "", amount : 1, price : null, date : null, bought : 0},
       list : {title : "", description : "", date : "", items : []},
     },
     model :{
-      item : {title : "", amount : 1, price : null, bought : 0},
+      item : {title : "", amount : 1, price : null, date : null, bought : 0},
       list : {title : "", description : "", date : "", items : []},
     },
     settings : {list : null, item : null, selected : null, limit : 5, cookie: (60*60*24*30)}
@@ -99,15 +103,15 @@ var app = new Vue({
       if(this.settings.list != null){list = this.settings.list;}
       else{list = this.settings.selected;}
 
-      if(this.validateItem(item)){
+      // if(this.validate(item)){
         item.price = this.convert(item.price, "money");
         this.lists[list].items.push(item);
-        this.add.item = this.model.item;
         this.update();
         $('#addItem').modal('hide');
-      }
+        this.add.item = {title : "", amount : 1, price : null, date : null, bought : 0};
+      // }
     },
-    validateItem: function(item){
+    validate: function(item){
       console.log(item);
       for (var key in item) {
         if(item[key] == null){return false;}

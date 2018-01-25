@@ -11,7 +11,7 @@
 <body>
   <main id="app">
     <!-- All Lists -->
-    <section id="intro" class="jumbotron text-center">
+    <section id="intro" class="jumbotron text-center" v-if="settings.list == null">
       <div class="container">
         <h1 class="jumbotron-heading">Shopping list calculator</h1>
         <p class="lead text-muted">A small application to help you budget your shopping.</p>
@@ -24,7 +24,7 @@
     <section class="container">
       <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a v-on:click="settings.list = null" href="#">Home</a></li>
+          <li class="breadcrumb-item"><a v-on:click="settings.list = null; settings.item = null" href="#">Home</a></li>
           <li class="breadcrumb-item" v-if="settings.list != null"><a href="#">{{lists[settings.list].title}}</a></li>
         </ol>
       </nav>
@@ -139,6 +139,47 @@
         </div>
       </div>
     </div>
+    <!-- edit item -->
+    <div class="modal fade" id="editItem" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="addItemForm">Edit Item</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form class="modal-body" v-if="settings.item != null">
+            <div class="row form-group">
+              <div class="col-12">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" placeholder="Enter Name" v-model="lists[settings.list].items[settings.item].title">
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-6">
+                <label for="amount">Amount</label>
+                <select class="form-control" v-model="lists[settings.list].items[settings.item].amount">
+                  <option v-for="i in settings.limit">{{i}}</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label for="amount">Price (each)</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">£</div>
+                  </div>
+                  <input type="number" class="form-control" placeholder="Price" v-model="lists[settings.list].items[settings.item].price">
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary float-right" data-dismiss="modal" v-on:click="$root.update()">Finish</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </main>
   <!-- Templates -->
   <!-- list card -->
@@ -175,7 +216,7 @@
             </div>
           </div>
           <div class="list-group">
-            <item-card v-for="(item, i) in list.items" :key="i" v-bind:index="i" v-bind:item="item" v-on:remove="remove(i)"></item-card>
+            <item-card v-for="(item, i) in list.items" :key="i" v-bind:index="i" v-bind:item="item" v-on:remove="remove(i)" v-on:select="select(i)"></item-card>
           </div>
           <div class="card list-stats">
             <div class="card-body">
@@ -195,7 +236,7 @@
   <script type="text/x-template" id="item-card">
     <div class="list-group-item list-group-item-action flex-column align-items-start">
       <div class="d-flex w-100 justify-content-between">
-        <a data-toggle="modal" data-target="#addItem"><h5 class="mb-1">{{item.title}} <span class="badge badge-secondary" v-if="item.amount > 1">{{item.amount}}</span></h5></a>
+        <a data-toggle="modal" data-target="#editItem" v-on:click="select"><h5 class="mb-1">{{item.title}} <span class="badge badge-secondary" v-if="item.amount > 1">{{item.amount}}</span></h5></a>
         <a v-on:click="remove" class="fa fa-close fa-lg float-right"></a>
       </div>
       <p class="mb-1">Price : £ {{price(item.price * item.amount)}}</p>

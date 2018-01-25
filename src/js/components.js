@@ -16,6 +16,9 @@ Vue.component('list-section', {
       this.$root.lists[this.index].items.splice(item, 1);
       this.$root.update();
     },
+    select: function (item) {
+      this.$root.settings.item = item;
+    },
     stats: function () {
       return this.$root.listStats(this.index);
     }
@@ -27,6 +30,7 @@ Vue.component('item-card', {
   template : "#item-card",
   methods: {
     remove: function (item) {this.$emit('remove');},
+    select: function (item) {this.$emit('select');},
     price: function (num) {return this.$root.convert(num, "money");}
   }
 });
